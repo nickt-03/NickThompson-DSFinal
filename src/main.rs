@@ -47,4 +47,16 @@ fn main() {
     println!("Sampled graph - Number of edges: {}", num_edges / 2);
     println!("Sampled graph - Average degree: {:.2}", avg_degree);
     println!("Sampled graph - Average degrees of separation: {:.2}", avg_sep);
+
+    // degree centrality for most influential profiles
+    let top_10_centrality = graph::degree_centrality(&sampled_graph);
+
+    // sort for the top 10 most influential 
+    let mut degree_vec: Vec<_> = top_10_centrality.iter().collect();
+    degree_vec.sort_by(|a, b| b.1.cmp(a.1));
+
+    println!("\nTop 10 Most Influential Twitter Profiles (Highest Degree of Centrality):");
+    for (node, degree) in degree_vec.iter().take(10) { 
+        println!("Node ID: {} - Degree: {}", node, degree);
+    }
 }

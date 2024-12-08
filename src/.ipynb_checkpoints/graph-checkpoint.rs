@@ -97,3 +97,15 @@ pub fn compute_avg_degrees_of_separation(
 
     total_distance as f64 / num_reachable_nodes as f64
 }
+
+// degree centrality for most neighbors (most influence)
+
+pub fn degree_centrality(graph: &HashMap<usize, HashSet<usize>>) -> HashMap<usize, usize> {
+    let mut centrality = HashMap::new();
+
+    for (&node, neighbors) in graph {
+        centrality.insert(node, neighbors.len());
+    }
+
+    centrality
+}
