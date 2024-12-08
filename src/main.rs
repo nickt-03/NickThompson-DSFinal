@@ -59,4 +59,42 @@ fn main() {
     for (node, degree) in degree_vec.iter().take(10) { 
         println!("Node ID: {} - Degree: {}", node, degree);
     }
+
+    //Step 4: profile suggestions
+    println!("Would you like to provide a Node ID for other recommended profiles to follow? (yes/no)");
+    let mut input = String::new();
+    io::stdin().read_line(&mut input).expect("Failed to read line");
+    let mut input = input.trim().to_lowercase();
+
+    //ask for node ID to base recommendations on 
+    if input == "yes" {
+        let mut attempts = 0;
+        let mut valid_node_found = false;
+        while attempts < 2 && !valid_node_found {
+            println!("Please provide a Node ID:");
+            input.clear();
+            io::stdin().read_line(&mut input).expect("Failed to read line");
+
+            let node_id: Option<usize> = input.trim().parse().ok();
+
+            if let Some(id) = node_id {
+                if sampled_graph.contains_key(&id) {
+                    let suggestions = graph::most_shared_neighbors(&sampled_graph, id);
+
+                    //display the top 5 recommendations
+                    if suggestions.is_empty() {
+                        println!("Node {} has no shared neighbors in the sampled graph.", id);
+                    } else {
+                        println!("Top 5 Recommended Profiles for Node {}:", id);
+                        for (neighbor, shared_count) in suggestions {
+                            println!("Node {}: {} shared neighbors", neighbor, shared_count);
+                        }
+                    }
+                    valid_node_found = true;  // Valid input, stop asking
+                } else {
+                    println!("Invalid Node ID. Please provide a valid numeric Node ID.");
+                }
+            }
+        }
+    }
 }

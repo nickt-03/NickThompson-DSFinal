@@ -109,3 +109,37 @@ pub fn degree_centrality(graph: &HashMap<usize, HashSet<usize>>) -> HashMap<usiz
 
     centrality
 }
+
+//shared neighbors function for profile recommendations. ie. if you follow 5 accounts that all follow profile z, suggest that you also follow profile z.
+pub fn most_shared_neighbors(
+    graph: &HashMap<usize, HashSet<usize>>,
+    selected_node: usize,
+) -> Vec<(usize, usize)> {
+    let binding = HashSet::new();
+    let selected_neighbors = graph
+        .get(&selected_node)
+        .unwrap_or(&binding);
+
+    let mut shared_counts: Vec<(usize, usize)> = graph
+        .iter()
+        .filter_map(|(&node, neighbors)| {
+            if node != selected_node {
+                let shared_neighbors = selected_neighbors
+                    .intersection(neighbors)
+                    .count();
+                if shared_neighbors > 0 {
+                    Some((node, shared_neighbors))
+                } else {
+                    None
+                }
+            } else {
+                None
+            }
+        })
+        .collect();
+
+    shared_counts.sort_by(|a, b| b.1.cmp(&a.1)); //sort, descending
+    shared_counts.truncate(5); //keep top 5
+
+    shared_counts
+}
