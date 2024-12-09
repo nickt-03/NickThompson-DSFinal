@@ -148,3 +148,6 @@ fn main() {
         println!("Invalid input. Please enter 'yes' or 'no'.");
     }
 }
+
+#[cfg(test)]
+mod tests;
