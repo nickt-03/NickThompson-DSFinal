@@ -13,7 +13,7 @@ where
     Ok(io::BufReader::new(file).lines())
 }
 
-//Read the graph from the dataset
+// READ GRAPH. Read the graph from the dataset
 pub fn read_graph(file_path: &str) -> HashMap<usize, HashSet<usize>> {
     let mut graph = HashMap::new();
     if let Ok(lines) = read_lines(file_path) {
@@ -32,7 +32,7 @@ pub fn read_graph(file_path: &str) -> HashMap<usize, HashSet<usize>> {
     graph
 }
 
-// Randomly sample nodes
+// RANDOMLY SAMPLE. Randomly sample nodes and build a subgraph
 pub fn sample_graph(
     graph: &HashMap<usize, HashSet<usize>>,
     sample_size: usize,
@@ -53,7 +53,7 @@ pub fn sample_graph(
     (sampled_graph, sampled_nodes)
 }
 
-// Analyze the graph and compute statistics
+// ANALYZE. Analyze the graph and compute statistics
 pub fn analyze_graph(
     graph: &HashMap<usize, HashSet<usize>>,
 ) -> (usize, usize, f64, f64) {
@@ -68,7 +68,7 @@ pub fn analyze_graph(
     (num_nodes, num_edges, avg_degree, avg_degrees_of_separation)
 }
 
-// Compute the average degrees of separation from a given node
+// AVERAGE DEGREES OF SEPARATION. Compute the average degrees of separation from a given node
 pub fn compute_avg_degrees_of_separation(
     graph: &HashMap<usize, HashSet<usize>>,
     start: usize,
@@ -98,19 +98,20 @@ pub fn compute_avg_degrees_of_separation(
     total_distance as f64 / num_reachable_nodes as f64
 }
 
-// degree centrality for most neighbors (most influence)
+// DEGREE CENTRALITY. Calculate degree centrality for most inflential profiles - most neighbors
 
 pub fn degree_centrality(graph: &HashMap<usize, HashSet<usize>>) -> HashMap<usize, usize> {
     let mut centrality = HashMap::new();
 
     for (&node, neighbors) in graph {
+        // Degree centrality is number of neighbors
         centrality.insert(node, neighbors.len());
     }
 
     centrality
 }
 
-//shared neighbors function for profile recommendations. ie. if you follow 5 accounts that all follow profile z, suggest that you also follow profile z.
+// TOP 5 SHARED NEIGHBORS. Function to get the top 5 most shared neighbors for a given node. Useful for suggesting profiles a user might want to follow.
 pub fn most_shared_neighbors(
     graph: &HashMap<usize, HashSet<usize>>,
     selected_node: usize,
@@ -138,8 +139,8 @@ pub fn most_shared_neighbors(
         })
         .collect();
 
-    shared_counts.sort_by(|a, b| b.1.cmp(&a.1)); //sort, descending
-    shared_counts.truncate(5); //keep top 5
+    shared_counts.sort_by(|a, b| b.1.cmp(&a.1)); // Sort by shared neighbor count, descending
+    shared_counts.truncate(5); // Keep top 5
 
     shared_counts
 }
